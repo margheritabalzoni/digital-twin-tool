@@ -75,34 +75,73 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         // Usa Vis.js per visualizzare il grafo
-        const container = document.getElementById('mynetwork');
-        const dataGraph = {
-            nodes: new vis.DataSet(nodes),
-            edges: new vis.DataSet(edges)
-        };
-        const options = {
-            nodes: {
-                shape: 'dot',
-                size: 16,
-                font: {
-                    size: 12
-                }
-            },
-            edges: {
-                arrows: 'to',
-                font: {
-                    align: 'middle'
-                }
-            },
-            physics: {
-                enabled: true
+    const container = document.getElementById('mynetwork');
+    const network = new vis.Network(container, { nodes: nodes, edges: edges }, {
+        physics: {
+            enabled: true,
+        },
+        manipulation: {
+            enabled: true,
+        },
+        nodes: {
+            shape: 'dot',
+            size: 16,
+            font: {
+                size: 12
             }
-        };
+        },
+        edges: {
+            arrows: 'to',
+            font: {
+                align: 'middle'
+            }
+        }
+    });
 
-        // Crea il grafo
-        const network = new vis.Network(container, dataGraph, options);
+    // Evento per il click su un nodo
+    network.on("click", function (params) {
+        if (params.nodes.length > 0) {
+            const nodeId = params.nodes[0]; // Ottieni l'ID del nodo cliccato
+            console.log("Nodo cliccato con ID:", nodeId);
+            getDigitalTwinData(nodeId); 
+            console.log(nodeId)// Chiamata all'API per ottenere i dati
+        }
+    });
+  
     }
 
+    // Funzione per inviare una richiesta GET alle API
+function getDigitalTwinData(digitalTwinUri) {
+    const apiUrl = `http://localhost:8080/wodt/${encodeURIComponent(digitalTwinUri)}`;
+    //const apiUrl = `http://localhost:8080/wodt/http://example.com/room1`;
+    fetch(apiUrl, {
+        method: 'GET',
+        headers: {
+            'Accept': 'text/turtle' // Se le API restituiscono Turtle
+        }
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error(`Errore ${response.status}: Digital Twin non trovato.`);
+        }
+        return response.text(); // Restituisce la risposta come testo
+    })
+    .then(turtleData => {
+        console.log("Dati RDF ricevuti:", turtleData);
+        // Puoi fare qualcosa con i dati ricevuti, ad esempio visualizzarli
+        displayTwinData(turtleData);
+    })
+    .catch(error => {
+        console.error("Errore durante la richiesta del Digital Twin:", error);
+    });
+}
+
+// Funzione per visualizzare i dati del Digital Twin (esempio di output nel DOM)
+function displayTwinData(turtleData) {
+    console.log(turtleData)
+    const resultContainer = document.getElementById('result'); // Assicurati di avere un div con questo ID
+    resultContainer.textContent = turtleData; // Mostra i dati ricevuti
+}
 
     getKnowledgeGraph()
 
