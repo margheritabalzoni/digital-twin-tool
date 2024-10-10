@@ -54,22 +54,41 @@ document.addEventListener('DOMContentLoaded', function () {
     function createGraph(data) {
         const nodes = [];
         const edges = [];
+        const dtSubjects = new Set(); // Set per tenere traccia dei DT
 
-        // Crea nodi ed archi dai dati RDF convertiti in JSON
+        // Identificare i soggetti che sono Digital Twin
+        data.forEach(triple => {
+            const { subject, predicate } = triple;
+
+            // Qui usiamo un predicato generico per identificare i Digital Twin
+            if (predicate === "https://purl.org/wodt/physicalAssetId") {
+                dtSubjects.add(subject); // Aggiungi il soggetto come Digital Twin
+            }
+        });
+
+        console.log(dtSubjects.has("http://localhost:3002/"))
+        // Creare nodi e archi solo per i Digital Twin
         data.forEach(triple => {
             const { subject, predicate, object } = triple;
 
-            // Aggiungi nodo per il subject se non esiste
-            if (!nodes.find(n => n.id === subject)) {
-                nodes.push({ id: subject, label: subject });
-            }
-            
-            // Aggiungi nodo per l'object se non esiste
-            if (!nodes.find(n => n.id === object)) {
-                nodes.push({ id: object, label: object });
-            }
+            // Solo se il soggetto è un DT
+            if (dtSubjects.has(subject)) {
 
-            edges.push({ from: subject, to: object});
+                // Aggiungi nodo per il soggetto se non esiste già
+                if (!nodes.find(n => n.id === subject)) {
+                    nodes.push({ id: subject, label: subject });
+                }
+
+                // Aggiungi nodo per l'oggetto se è anche un DT
+                if (dtSubjects.has(object) && !nodes.find(n => n.id === object)) {
+                    nodes.push({ id: object, label: object });
+                }
+
+                // Aggiungi un arco tra il soggetto e l'oggetto (DT -> DT)
+                if (dtSubjects.has(object)) {
+                    edges.push({ from: subject, to: object});
+                }
+            }
         });
 
         
@@ -110,7 +129,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 function getDigitalTwinData(digitalTwinUri) {
-    const apiUrl = `http://localhost:8080/wodt/${encodeURIComponent(digitalTwinUri)}`;
+    const apiUrl = `http://localhost:8080/wodt/` + digitalTwinUri;
    
         let xhr = new XMLHttpRequest();
         xhr.open('GET', apiUrl);
