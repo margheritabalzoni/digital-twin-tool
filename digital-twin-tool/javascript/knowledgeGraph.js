@@ -13,12 +13,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (xhr.status === OK) {
                     // I dati ricevuti sono in formato Turtle
                     let turtleData = xhr.responseText;
-                    //console.log("Turtle Data:", turtleData);
+                    console.log("Turtle Data:", turtleData);
     
-                    // Ora convertiamo Turtle in JSON-LD
                     parseTurtleToJSONLD(turtleData);
                 } else {
-                    console.log('Error: ' + xhr.status); // Lo stato della HTTP response.
+                    console.log('Error: ' + xhr.status); 
                 }
             }
         };
@@ -46,12 +45,12 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 console.log(jsonld)
-                // Visualizza il grafo
+               
                 createGraph(jsonld);
             }
         });
     }
-    // Funzione per creare il grafo con Vis.js
+   
     function createGraph(data) {
         const nodes = [];
         const edges = [];
@@ -70,11 +69,10 @@ document.addEventListener('DOMContentLoaded', function () {
                 nodes.push({ id: object, label: object });
             }
 
-            // Aggiungi l'arco (edge)
             edges.push({ from: subject, to: object});
         });
 
-        // Usa Vis.js per visualizzare il grafo
+        
     const container = document.getElementById('mynetwork');
     const network = new vis.Network(container, { nodes: nodes, edges: edges }, {
         physics: {
@@ -104,20 +102,19 @@ document.addEventListener('DOMContentLoaded', function () {
             const nodeId = params.nodes[0]; // Ottieni l'ID del nodo cliccato
             console.log("Nodo cliccato con ID:", nodeId);
             getDigitalTwinData(nodeId); 
-            console.log(nodeId)// Chiamata all'API per ottenere i dati
+            console.log(nodeId)
         }
     });
   
     }
 
-    // Funzione per inviare una richiesta GET alle API
+
 function getDigitalTwinData(digitalTwinUri) {
-    //const apiUrl = `http://localhost:8080/wodt/${encodeURIComponent(digitalTwinUri)}`;
-    const apiUrl = `http://localhost:8080/wodt/http://localhost/%3Cport%3E/wodt/http%3A%2F%2Fexample.com%2Froom1`;
+    const apiUrl = `http://localhost:8080/wodt/${encodeURIComponent(digitalTwinUri)}`;
    
         let xhr = new XMLHttpRequest();
         xhr.open('GET', apiUrl);
-        // Questa funzione verrà chiamata al cambio di stato della chiamata AJAX
+    
         xhr.onreadystatechange = function () {
             let DONE = 4; // Stato 4 indica che la richiesta è stata effettuata.
             let OK = 200; // Se la HTTP response ha stato 200 vuol dire che ha avuto successo.

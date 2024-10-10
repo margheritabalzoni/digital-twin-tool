@@ -1,22 +1,32 @@
 main {
     display: flex;
+    flex-direction: column;
     justify-content: space-between; /* Spazia le colonne */
     gap: 20px; /* Spaziatura tra le colonne */
     padding: 20px;
 }
+body {
+    background-color: #2C2734;
+    margin: 0;
+    padding: 0;
+}
+
+header{
+    color: white;
+}
 
 /* Section contenuto principale (query + knowledge graph) */
-#section-content {
-    flex: 2; /* Colonna più larga */
-    background-color: #f8f9fa;
+#graph-section {
+    flex: 2;
+    background-color: #dcade8;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
 }
 
-/* Aside contenuto (Nome DT) */
+
 #aside-content {
-    flex: 1; /* Colonna più stretta */
+    flex: 1; 
     background-color: #E0BBE4;
     padding: 15px;
     border-radius: 5px;
@@ -24,7 +34,7 @@ main {
     
 }
 
-/* Form e input di ricerca */
+
 form {
     display: flex;
     gap: 10px;
@@ -38,8 +48,8 @@ input[type="text"] {
     border-radius: 4px;
 }
 
-button {
-    background-color: #007bff;
+.btn-primary {
+    background-color: #7656A9;
     border: none;
     padding: 10px 20px;
     color: white;
@@ -47,12 +57,14 @@ button {
     cursor: pointer;
 }
 
-button:hover {
-    background-color: #0056b3;
+.btn-primary:hover {
+    background-color: #9971db;
+    border-color: #9971db;
 }
 
-/* Stili per il footer */
+
 footer {
+    width: 100%;
     text-align: center;
     padding: 10px;
     background-color: #f1f1f1;
