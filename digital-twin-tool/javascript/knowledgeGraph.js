@@ -187,7 +187,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     async function displayTwinData(turtleData) {
         const jsonldData =  await parseTurtleToJSONLD(turtleData);
-    
+        resultContainer.innerHTML = ''; 
+
         if (!Array.isArray(jsonldData)) {
             console.error('Expected array but got:', jsonldData);
             return;
