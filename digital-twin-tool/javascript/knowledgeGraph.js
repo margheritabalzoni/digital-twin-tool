@@ -1,6 +1,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     let network = null; // Variabile per il grafo
     let positions = {}; // Variabile per memorizzare le posizioni dei nodi
+    const resultContainer = document.getElementById('nodeDetails'); //container per la visuaslizzazione delle informazioni del nodo
 
     function getKnowledgeGraph() {
         let xhr = new XMLHttpRequest();
@@ -152,6 +153,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Evento per il click su un nodo
         network.on("click", function (params) {
             if (params.nodes.length > 0) {
+                resultContainer.innerHTML = ''; 
                 const nodeId = params.nodes[0]; // Ottieni l'ID del nodo cliccato
                 console.log("Nodo cliccato con ID:", nodeId);
                 getDigitalTwinData(nodeId); 
@@ -161,7 +163,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     function getDigitalTwinData(digitalTwinUri) {
-        const apiUrl = `http://localhost:8080/wodt/` + digitalTwinUri;
+        const apiUrl = digitalTwinUri;
     
         let xhr = new XMLHttpRequest();
         xhr.open('GET', apiUrl);
@@ -183,9 +185,22 @@ document.addEventListener('DOMContentLoaded', function () {
         xhr.send();
     }
 
-    function displayTwinData(turtleData) {
-        const resultContainer = document.getElementById('nodeDetails');
-        resultContainer.textContent = parseTurtleToJSONLD(turtleData); // Mostra i dati ricevuti nel div
+    async function displayTwinData(turtleData) {
+        const jsonldData =  await parseTurtleToJSONLD(turtleData);
+    
+        if (!Array.isArray(jsonldData)) {
+            console.error('Expected array but got:', jsonldData);
+            return;
+        }
+        // Itera su ogni tripla JSON-LD e crea una rappresentazione leggibile
+        jsonldData.forEach(triple => {
+            // Crea una riga per ogni tripla (proprietà e oggetto)
+            const row = document.createElement('div');
+            row.textContent = `Property:    ${triple.predicate}, Object:   ${triple.object}`;
+    
+            // Aggiungi la riga al contenitore
+            resultContainer.appendChild(row);
+        });
     }
 
     //setInterval(getKnowledgeGraph, 2000);
