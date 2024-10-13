@@ -3,22 +3,29 @@ main {
     flex-direction: column;
     justify-content: space-between; /* Spazia le colonne */
     gap: 20px; /* Spaziatura tra le colonne */
-    padding: 20px;
+    
 }
 body {
     background-color: #2C2734;
     margin: 0;
-    padding: 0;
+    padding: 20px;
 }
 
 header{
     color: white;
+    background-color: #4f465e;
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border-radius: 5px;
+   
 }
+
 
 /* Section contenuto principale (query + knowledge graph) */
 #graph-section {
     flex: 2;
-    background-color: #dcade8;
+    background-color: #615672;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -82,4 +89,34 @@ footer {
     width: 100%;
     height: 500px;
     border: 1px solid lightgray;
+}
+
+#layout-section {
+    display: flex;
+    flex-direction: column; /* Colonna per layout iniziale */
+    gap: 20px;
+}
+
+h3{
+    font-size: medium;
+    font-weight: bold;
+}
+
+p{
+    font-size: small;
+}
+/* Modalità desktop */
+@media (min-width: 768px) {
+   
+    #layout-section {
+        flex-direction: row; /* Le due sezioni affiancate in modalità desktop */
+    }
+
+    #graph-section, #graph-info-section {
+        flex: 0 1 48%; /* Entrambe le sezioni occupano il 48% della larghezza */
+    }
+
+    #mynetwork {
+        height: 500px; /* Altezza del grafo estesa per schermi più grandi */
+    }
 }
