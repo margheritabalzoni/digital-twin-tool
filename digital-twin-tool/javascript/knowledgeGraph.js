@@ -193,15 +193,43 @@ document.addEventListener('DOMContentLoaded', function () {
             console.error('Expected array but got:', jsonldData);
             return;
         }
-        // Itera su ogni tripla JSON-LD e crea una rappresentazione leggibile
-        jsonldData.forEach(triple => {
-            // Crea una riga per ogni tripla (proprietà e oggetto)
-            const row = document.createElement('div');
-            row.textContent = `Property:    ${triple.predicate}, Object:   ${triple.object}`;
-    
-            // Aggiungi la riga al contenitore
-            resultContainer.appendChild(row);
-        });
+        // Creazione della tabella
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-striped'); // Usa le classi Bootstrap per la tabella
+
+    // Creazione dell'intestazione della tabella
+    const thead = document.createElement('thead');
+    thead.innerHTML = `
+        <tr>
+            <th>Property</th>
+            <th>Object</th>
+        </tr>
+    `;
+    table.appendChild(thead);
+
+    // Creazione del corpo della tabella
+    const tbody = document.createElement('tbody');
+
+    // Iterazione su ogni tripla JSON-LD per creare righe della tabella
+    jsonldData.forEach(triple => {
+        const row = document.createElement('tr');
+
+        const propertyCell = document.createElement('td');
+        propertyCell.textContent = triple.predicate || 'N/A';  // Mostra la proprietà
+
+        const objectCell = document.createElement('td');
+        objectCell.textContent = triple.object || 'N/A';  // Mostra l'oggetto
+
+        row.appendChild(propertyCell);
+        row.appendChild(objectCell);
+
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(tbody);
+
+    // Aggiungi la tabella al contenitore
+    resultContainer.appendChild(table);
     }
 
     //setInterval(getKnowledgeGraph, 2000);

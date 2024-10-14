@@ -25,7 +25,7 @@ header{
 /* Section contenuto principale (query + knowledge graph) */
 #graph-section {
     flex: 2;
-    background-color: #615672;
+    background-color: #c89fd2;
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -37,6 +37,7 @@ header{
     padding: 15px;
     border-radius: 5px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    overflow-x: auto;
 }
 
 #aside-content {
@@ -105,8 +106,30 @@ h3{
 p{
     font-size: small;
 }
+
+
+/* Tabella delle proprietà e degli oggetti all'interno della sezione delle informazioni */
+#nodeDetails table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px;
+    font-size: 10px;  /* Riduce la dimensione del testo della tabella */
+}
+
+#nodeDetails th, #nodeDetails td {
+    padding: 5px 8px; /* Riduce il padding per celle più compatte */
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+#nodeDetails th {
+    background-color: #f8f9fa;
+    font-weight: bold;
+    font-size: 13px; /* Font leggermente più piccolo per le intestazioni */
+}
+
 /* Modalità desktop */
-@media (min-width: 768px) {
+@media (min-width: 998px) {
    
     #layout-section {
         flex-direction: row; /* Le due sezioni affiancate in modalità desktop */
