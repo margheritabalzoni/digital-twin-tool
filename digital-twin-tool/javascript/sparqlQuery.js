@@ -1,32 +1,30 @@
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('queryForm').addEventListener('submit', function(event) {
-        event.preventDefault();  
+        event.preventDefault();
 
+        // Recupera il valore della query SPARQL dal campo di input
         const sparqlQuery = document.getElementById('queryInput').value;
 
-        const requestBody = {
-            query: sparqlQuery
-        };
-
+        // Crea una nuova richiesta XMLHttpRequest
         const xhr = new XMLHttpRequest();
-        xhr.open('POST', 'http://localhost:8080/wodt/sparql', true); 
-        xhr.setRequestHeader('Content-Type', 'application/json'); 
-
+        xhr.open('POST', 'http://localhost:8080/wodt/sparql', true);
+        
+        // Imposta l'header Content-Type
+        xhr.setRequestHeader('Content-Type', 'application/sparql-query');
+        
         xhr.onload = function() {
-            const resultsDiv = document.getElementById('results');
-
-            if (xhr.status >= 200 && xhr.status < 300) {
-                const data = JSON.parse(xhr.responseText);
-                resultsDiv.innerHTML = `<pre>${JSON.stringify(data, null, 2)}</pre>`;
+            if (xhr.status === 200) {
+                console.log('Risultato della query:', this.responseText);
             } else {
-                resultsDiv.innerHTML = `<p style="color: red;">Errore durante l'esecuzione della query: ${xhr.statusText}</p>`;
+                console.error('Errore durante l\'esecuzione della query:', xhr.statusText);
             }
         };
 
         xhr.onerror = function() {
-            document.getElementById('results').innerHTML = `<p style="color: red;">Errore di rete. Non è stato possibile completare la richiesta.</p>`;
+            console.error('Errore di rete. Non è stato possibile completare la richiesta.');
         };
 
-        xhr.send(JSON.stringify(requestBody));
+        // Invia la query SPARQL ottenuta dall'input
+        xhr.send(sparqlQuery);
     });
 });

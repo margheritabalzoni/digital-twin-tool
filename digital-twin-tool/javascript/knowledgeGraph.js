@@ -16,8 +16,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (xhr.status === OK) {
                     // I dati ricevuti sono in formato Turtle
                     let turtleData = xhr.responseText;
-                    console.log("Turtle Data:", turtleData);
-
                     // Aspetta che la conversione Turtle -> JSON-LD sia completa
                     const jsonldData = await parseTurtleToJSONLD(turtleData);
                     createGraph(jsonldData);
@@ -56,7 +54,7 @@ document.addEventListener('DOMContentLoaded', function () {
                         };
                     });
 
-                    console.log(jsonld);
+                    
 
                     resolve(jsonld); // Risolvi la Promise con i dati JSON-LD
                 }
@@ -155,9 +153,10 @@ document.addEventListener('DOMContentLoaded', function () {
             if (params.nodes.length > 0) {
                 resultContainer.innerHTML = ''; 
                 const nodeId = params.nodes[0]; // Ottieni l'ID del nodo cliccato
-                console.log("Nodo cliccato con ID:", nodeId);
                 getDigitalTwinData(nodeId); 
-                console.log(nodeId);
+                //const button = document.createElement('button')
+                //button.textContent = "Espandi nodo"
+                //resultContainer.appendChild(button)
             }
         });
     }
@@ -172,7 +171,6 @@ document.addEventListener('DOMContentLoaded', function () {
             let DONE = 4; // Stato 4 indica che la richiesta è stata effettuata.
             let OK = 200; // Se la HTTP response ha stato 200 vuol dire che ha avuto successo.
             if (xhr.readyState === DONE) {
-                console.log(xhr.status);
                 if (xhr.status === OK) {
                     let turtleData = xhr.responseText;
                     displayTwinData(turtleData)
@@ -232,7 +230,7 @@ document.addEventListener('DOMContentLoaded', function () {
     resultContainer.appendChild(table);
     }
 
-    //setInterval(getKnowledgeGraph, 2000);
+    setInterval(getKnowledgeGraph, 2000);
     // Inizializza il grafo
-    getKnowledgeGraph();
+    //getKnowledgeGraph();
 });
