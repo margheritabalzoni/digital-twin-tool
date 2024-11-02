@@ -1,7 +1,9 @@
+    let queryActive = false;
 document.addEventListener('DOMContentLoaded', function () {
-    let network = null; // Variabile per il grafo
+    window.network = null; // Crea la variabile `network` come proprietà di `window`
     let positions = {}; // Variabile per memorizzare le posizioni dei nodi
     const resultContainer = document.getElementById('nodeDetails'); //container per la visuaslizzazione delle informazioni del nodo
+ 
 
     function getKnowledgeGraph() {
         let xhr = new XMLHttpRequest();
@@ -230,7 +232,11 @@ document.addEventListener('DOMContentLoaded', function () {
     resultContainer.appendChild(table);
     }
 
-    setInterval(getKnowledgeGraph, 2000);
+    setInterval(function() {
+        if (!queryActive) {
+            getKnowledgeGraph(); // Aggiorna il grafo solo se non c'è una query attiva
+        }
+    }, 2000);
     // Inizializza il grafo
     //getKnowledgeGraph();
 });
