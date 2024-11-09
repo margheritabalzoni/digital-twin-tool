@@ -1,7 +1,7 @@
+
 document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('queryForm').addEventListener('submit', function(event) {
         event.preventDefault();
-        queryActive = true; 
         const resetButtonContainer = document.getElementById('resetButtonContainer');
 
         // Recupera il valore della query SPARQL dal campo di input
@@ -13,18 +13,10 @@ document.addEventListener('DOMContentLoaded', function() {
         
         // Imposta l'header Content-Type
         xhr.setRequestHeader('Content-Type', 'application/sparql-query');
-        
+ 
         xhr.onload = function() {
             if (xhr.status === 200) {
                 console.log('Risultato della query:', this.responseText);
-                
-                // Converte la risposta SPARQL JSON in un formato leggibile per displayTwinData
-                const jsonData = JSON.parse(this.responseText);
-                const jsonldData = jsonData.results.bindings.map(binding => ({
-                    subject: binding.subject?.value || 'N/A',
-                    predicate: binding.predicate?.value || 'N/A',
-                    object: binding.object?.value || 'N/A'
-                }));
 
                 const resetButton = document.createElement('button');
                 resetButton.id = 'resetGraph';
@@ -33,12 +25,14 @@ document.addEventListener('DOMContentLoaded', function() {
                 resetButtonContainer.appendChild(resetButton); 
 
                 resetButton.addEventListener('click', function() {
-                    queryActive = false; // Disattiva la query
-                    resetButton.remove(); // Rimuovi il bottone di reset
+                    window.graphNodes.clear();
+                    resetButton.remove(); 
+                    window.allNodes.forEach(node => window.graphNodes.add(node)); // Disattiva la query
+                   
                 });
 
                 //displayTwinData(jsonldData); 
-                updateGraphWithQueryResults(jsonldData); 
+                updateGraphWithQueryResults(this.responseText); 
             } else {
                 console.error('Errore durante l\'esecuzione della query:', xhr.statusText);
             }
@@ -54,40 +48,33 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function updateGraphWithQueryResults(data) {
-        const nodes = [];
-        const edges = [];
-    
-        data.forEach(triple => {
-            const { subject, predicate, object } = triple;
-    
-            if (!nodes.find(n => n.id === subject)) {
-                nodes.push({
-                    id: subject,
-                    label: subject
-                });
-            }
-    
-            if (!nodes.find(n => n.id === object)) {
-                nodes.push({
-                    id: object,
-                    label: object
-                });
-            }
-    
-            edges.push({ from: subject, to: object, label: predicate });
-        });
-    
-        // Ora accedi a `network` come `window.network`
-        if (window.network) {
-            window.network.setData({
-                nodes: new vis.DataSet(nodes),
-                edges: new vis.DataSet(edges)
+    try {
+        console.log("ok")
+        // Parsing della risposta (assumiamo che data sia una stringa JSON)
+        const jsonldData = JSON.parse(data);
+
+        // Crea un nuovo Set temporaneo per i nodi trovati nella query
+        const newNodes = new Set();
+
+        jsonldData.results.bindings.forEach(binding => {
+            // Itera su tutte le chiavi di binding (ognuna è una variabile della query SPARQL)
+            Object.keys(binding).forEach(key => {
+                const value = binding[key]?.value; // Estrai il valore della variabile
+
+                if (value) {
+                    newNodes.add(value); // Aggiungi il valore al set dei nodi se esiste
+                }
             });
-        } else {
-            const container = document.getElementById('mynetwork');
-            window.network = new vis.Network(container, { nodes: new vis.DataSet(nodes), edges: new vis.DataSet(edges) });
-        }
-    
-    
+        });
+
+        // Ora aggiorna `Nodes` con i nuovi nodi trovati
+        window.graphNodes.clear();
+        newNodes.forEach(node => window.graphNodes.add(node));
+        console.log("query:"+window.graphNodes)
+
+    } catch (error) {
+        console.error("Errore durante l'elaborazione dei risultati della query:", error);
+    }
 }
+
 
