@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Recupera il valore della query SPARQL dal campo di input
         const sparqlQuery = document.getElementById('queryInput').value;
-
+        document.getElementById('queryInput').value = "";
         // Crea una nuova richiesta XMLHttpRequest
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:8080/wodt/sparql', true);
