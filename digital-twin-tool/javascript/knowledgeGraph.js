@@ -1,6 +1,7 @@
 window.graphNodes = new Set();
 window.network = null; // Variabile globale per la rete
 window.allNodes = new Set(); // Lista di tutti i nodi nel grafo
+let expandNodes = new Set(); //Lista che tiene traccia dei nodi espansi
 
 let positions = {}; // Memorizza le posizioni dei nodi
 const resultContainer = document.getElementById('nodeDetails'); // Contenitore dei dettagli del nodo
@@ -33,7 +34,7 @@ async function initializeNodes(){
                 allNodes.add(subject);
             }
         });
-        graphNodes.clear();
+        
         allNodes.forEach(node => graphNodes.add(node)); 
         
     } catch (error) {
@@ -60,6 +61,12 @@ function initializeGraph() {
             if (params.nodes.length > 0) {
                 const nodeId = params.nodes[0]; // Ottieni l'ID del nodo cliccato
                 getDigitalTwinData(nodeId); // Ottieni i dati del Digital Twin
+
+                if(!expandNodes.has(nodeId)){
+                    expandNodes.add(nodeId)
+                }else{
+                    expandNodes.delete(nodeId)
+                }
             }
         });
     }
@@ -117,7 +124,12 @@ function createGraph(data) {
         const { subject, predicate, object } = triple;
         if (graphNodes.has(subject)) {
             addNode(subject, nodes);
-            if (graphNodes.has(object)) {
+            if(!expandNodes.has(subject)){
+                if (graphNodes.has(object)) {
+                    addNode(object, nodes);
+                    edges.push({ from: subject, to: object });
+                }
+            }else{
                 addNode(object, nodes);
                 edges.push({ from: subject, to: object });
             }
