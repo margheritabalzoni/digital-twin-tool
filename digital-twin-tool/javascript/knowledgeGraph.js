@@ -130,7 +130,7 @@ function createGraph(data) {
                     edges.push({ from: subject, to: object });
                 }
             }else{
-                addNode(object, nodes);
+                addNode(object, nodes, 'red');
                 edges.push({ from: subject, to: object });
             }
         }
@@ -141,13 +141,14 @@ function createGraph(data) {
 }
 
 // Funzione per aggiungere un nodo se non esiste già
-function addNode(id, nodes) {
+function addNode(id, nodes,  color = 'blue') {
     if (!nodes.find(n => n.id === id)) {
         nodes.push({
             id: id,
             label: id,
             x: positions[id]?.x,
-            y: positions[id]?.y
+            y: positions[id]?.y,
+            color: color
         });
     }
 }
