@@ -143,3 +143,47 @@ p{
         height: 500px; /* Altezza del grafo estesa per schermi più grandi */
     }
 }
+
+/* Contenitore della tabella */
+#queryResultTableContainer {
+    margin: 10px auto; /* Riduce lo spazio intorno */
+    max-width: 600px; /* Limita la larghezza massima della tabella */
+    overflow-x: auto; /* Aggiunge lo scroll orizzontale se necessario */
+}
+
+/* Tabella compatta */
+table.table {
+    font-size: 12px; /* Riduce la dimensione del testo */
+    border-collapse: collapse; /* Riduce gli spazi tra le celle */
+    width: 100%; /* Fa in modo che la tabella riempia il contenitore */
+}
+
+/* Stile per le righe */
+table.table tr {
+    height: 25px; /* Riduce l'altezza delle righe */
+}
+
+/* Stile per le celle */
+table.table th, table.table td {
+    padding: 5px; /* Riduce lo spazio interno delle celle */
+    text-align: left; /* Allinea il testo a sinistra */
+}
+
+/* Bordo sottile per la tabella */
+table.table, table.table th, table.table td {
+    border: 1px solid #ddd; /* Bordo leggero per ogni cella */
+}
+
+/* Colore alternato per le righe */
+table.table-striped tbody tr:nth-child(odd) {
+    background-color: #f9f9f9; /* Colore chiaro per righe alternate */
+}
+
+table.table-striped tbody tr:nth-child(even) {
+    background-color: #ffffff; /* Colore bianco per le righe pari */
+}
+
+/* Evidenziazione riga al passaggio del mouse */
+table.table-hover tbody tr:hover {
+    background-color: #f1f1f1; /* Colore leggermente più scuro */
+}

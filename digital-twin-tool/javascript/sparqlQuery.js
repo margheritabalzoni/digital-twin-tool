@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         // Recupera il valore della query SPARQL dal campo di input
         const sparqlQuery = document.getElementById('queryInput').value;
         document.getElementById('queryInput').value = "";
+        const tableContainer = document.getElementById('queryResultTableContainer');
         // Crea una nuova richiesta XMLHttpRequest
         const xhr = new XMLHttpRequest();
         xhr.open('POST', 'http://localhost:8080/wodt/sparql', true);
@@ -26,6 +27,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 resetButton.addEventListener('click', function() {
                     window.graphNodes.clear();
+                    tableContainer.innerHTML = '';
                     resetButton.remove(); 
                     window.allNodes.forEach(node => window.graphNodes.add(node)); // Disattiva la query
                    
@@ -49,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function updateGraphWithQueryResults(data) {
     try {
-        console.log("ok")
+        console.log("ok");
         // Parsing della risposta (assumiamo che data sia una stringa JSON)
         const jsonldData = JSON.parse(data);
 
@@ -67,14 +69,58 @@ function updateGraphWithQueryResults(data) {
             });
         });
 
-        // Ora aggiorna `Nodes` con i nuovi nodi trovati
+        // Aggiorna il grafo con i nuovi nodi trovati
         window.graphNodes.clear();
         newNodes.forEach(node => window.graphNodes.add(node));
-        console.log("query:"+window.graphNodes)
+        console.log("query:", window.graphNodes);
 
+        // Visualizza i risultati della query come tabella
+        displayQueryResultsAsTable(jsonldData);
     } catch (error) {
         console.error("Errore durante l'elaborazione dei risultati della query:", error);
     }
 }
 
 
+
+function displayQueryResultsAsTable(data) {
+    const container = document.getElementById('queryResultTableContainer');
+    container.innerHTML = ''; // Resetta il contenitore
+
+    // Crea la tabella
+    const table = document.createElement('table');
+    table.classList.add('table', 'table-bordered', 'table-striped');
+
+    const thead = document.createElement('thead');
+    const tbody = document.createElement('tbody');
+
+    // Estrai le intestazioni delle colonne
+    const headers = new Set();
+    data.results.bindings.forEach(binding => {
+        Object.keys(binding).forEach(key => headers.add(key));
+    });
+
+    // Costruisci l'header
+    const headerRow = document.createElement('tr');
+    headers.forEach(header => {
+        const th = document.createElement('th');
+        th.textContent = header;
+        headerRow.appendChild(th);
+    });
+    thead.appendChild(headerRow);
+
+    // Costruisci il corpo della tabella
+    data.results.bindings.forEach(binding => {
+        const row = document.createElement('tr');
+        headers.forEach(header => {
+            const cell = document.createElement('td');
+            cell.textContent = binding[header]?.value || 'N/A'; // Inserisci il valore o "N/A"
+            row.appendChild(cell);
+        });
+        tbody.appendChild(row);
+    });
+
+    table.appendChild(thead);
+    table.appendChild(tbody);
+    container.appendChild(table);
+}
